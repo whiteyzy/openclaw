@@ -613,7 +613,7 @@ describe("gateway sessions patch", () => {
         cfg: {
           agents: {
             defaults: {
-              model: { primary: "openai-codex/gpt-5.5" },
+              model: { primary: "openai/gpt-5.5" },
             },
           },
         } as OpenClawConfig,

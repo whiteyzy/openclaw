@@ -187,7 +187,7 @@ async function resolveOpenAIRealtimeTranscriptionAuthorization(
     return apiKey;
   }
   const authToken = await resolveProviderAuthProfileApiKey({
-    provider: "openai-codex",
+    provider: "openai",
     cfg: config.cfg,
   });
   if (!authToken) {
@@ -305,7 +305,7 @@ export function buildOpenAIRealtimeTranscriptionProvider(): RealtimeTranscriptio
       Boolean(
         normalizeProviderConfig(providerConfig).apiKey ||
         process.env.OPENAI_API_KEY ||
-        isProviderAuthProfileConfigured({ provider: "openai-codex", cfg }),
+        isProviderAuthProfileConfigured({ provider: "openai", cfg }),
       ),
     createSession: (req) => {
       const config = normalizeProviderConfig(req.providerConfig);

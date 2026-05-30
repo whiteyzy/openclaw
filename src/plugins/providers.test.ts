@@ -55,6 +55,7 @@ function createManifestProviderPlugin(params: {
   setup?: PluginManifestRecord["setup"];
   contracts?: PluginManifestRecord["contracts"];
   modelCatalog?: PluginManifestRecord["modelCatalog"];
+  providerAuthAliases?: PluginManifestRecord["providerAuthAliases"];
   packageManifest?: OpenClawPackageManifest;
 }): PluginManifestRecord {
   return {
@@ -67,6 +68,7 @@ function createManifestProviderPlugin(params: {
     activation: params.activation,
     setup: params.setup,
     modelCatalog: params.modelCatalog,
+    providerAuthAliases: params.providerAuthAliases,
     packageManifest: params.packageManifest,
     contracts: params.contracts,
     skills: [],
@@ -558,6 +560,22 @@ describe("resolvePluginProviders", () => {
 
     expectOwningPluginIds("moonshotai", ["moonshot"]);
     expectOwningPluginIds("moonshot-ai", ["moonshot"]);
+  });
+
+  it("maps manifest provider auth aliases to the target provider owner", () => {
+    setManifestPlugins([
+      createManifestProviderPlugin({
+        id: "openai",
+        providerIds: ["openai"],
+        providerAuthAliases: {
+          "openai-codex": "openai",
+        },
+      }),
+    ]);
+
+    expectOwningPluginIds("openai", ["openai"]);
+    expectOwningPluginIds("openai-codex", ["openai"]);
+    expectModelOwningPluginIds("openai-codex/gpt-5.5", ["openai"]);
   });
 
   it("reflects provider ownership manifest changes on the next lookup", () => {
