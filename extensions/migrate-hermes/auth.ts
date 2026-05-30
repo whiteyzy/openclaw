@@ -34,8 +34,9 @@ import {
 import type { HermesSource } from "./source.js";
 import type { PlannedTargets } from "./targets.js";
 
-const OPENAI_CODEX_PROVIDER_ID = "openai-codex";
-const OPENAI_CODEX_DEFAULT_MODEL = "openai/gpt-5.5";
+const HERMES_OPENAI_CODEX_SOURCE_PROVIDER_ID = "openai-codex";
+const OPENAI_PROVIDER_ID = "openai";
+const OPENAI_DEFAULT_MODEL = "openai/gpt-5.5";
 const HERMES_AUTH_DISPLAY_NAME = "Hermes import";
 
 type AgentDefaultModelConfigs = NonNullable<
@@ -155,8 +156,8 @@ function readProviderTokens(
   sourcePath: string,
 ): HermesCodexAuthCandidate | undefined {
   const providers = isRecord(auth.providers) ? auth.providers : {};
-  const provider = isRecord(providers[OPENAI_CODEX_PROVIDER_ID])
-    ? providers[OPENAI_CODEX_PROVIDER_ID]
+  const provider = isRecord(providers[HERMES_OPENAI_CODEX_SOURCE_PROVIDER_ID])
+    ? providers[HERMES_OPENAI_CODEX_SOURCE_PROVIDER_ID]
     : undefined;
   const tokens = isRecord(provider?.tokens) ? provider.tokens : undefined;
   const access = readString(tokens?.access_token);
@@ -179,8 +180,8 @@ function readPoolTokens(
   sourcePath: string,
 ): HermesCodexAuthCandidate[] {
   const pool = isRecord(auth.credential_pool) ? auth.credential_pool : {};
-  const entries = Array.isArray(pool[OPENAI_CODEX_PROVIDER_ID])
-    ? pool[OPENAI_CODEX_PROVIDER_ID]
+  const entries = Array.isArray(pool[HERMES_OPENAI_CODEX_SOURCE_PROVIDER_ID])
+    ? pool[HERMES_OPENAI_CODEX_SOURCE_PROVIDER_ID]
     : [];
   const candidates: HermesCodexAuthCandidate[] = [];
   for (const entry of entries) {
@@ -290,8 +291,8 @@ function buildAuthResult(
 ): ProviderAuthResult {
   const identity = resolveCodexIdentity(candidate.access, candidate.accountId);
   return buildOauthProviderAuthResult({
-    providerId: OPENAI_CODEX_PROVIDER_ID,
-    defaultModel: OPENAI_CODEX_DEFAULT_MODEL,
+    providerId: OPENAI_PROVIDER_ID,
+    defaultModel: OPENAI_DEFAULT_MODEL,
     access: candidate.access,
     refresh: candidate.refresh,
     expires: resolveAccessTokenExpiry(candidate.access),
@@ -307,7 +308,7 @@ function readProviderAuthModelConfigs(result: ProviderAuthResult): AgentDefaultM
   if (isRecord(models)) {
     return { ...models };
   }
-  const defaultModel = readString(result.defaultModel) ?? OPENAI_CODEX_DEFAULT_MODEL;
+  const defaultModel = readString(result.defaultModel) ?? OPENAI_DEFAULT_MODEL;
   return { [defaultModel]: {} };
 }
 
@@ -499,8 +500,8 @@ export async function buildAuthItems(params: {
       ((targetExists && !matchedProfileId && !params.ctx.overwrite) || configConflict) && !skipped;
     const itemId =
       profiles.length === 1
-        ? `auth:${OPENAI_CODEX_PROVIDER_ID}`
-        : `auth:${OPENAI_CODEX_PROVIDER_ID}:${profile.sourceProfileId}`;
+        ? `auth:${OPENAI_PROVIDER_ID}`
+        : `auth:${OPENAI_PROVIDER_ID}:${profile.sourceProfileId}`;
     return createMigrationItem({
       id: itemId,
       kind: "auth",
@@ -518,7 +519,7 @@ export async function buildAuthItems(params: {
         ? "OpenAI Codex OAuth credentials detected in Hermes."
         : "Import Hermes OpenAI Codex OAuth credentials and configure OpenAI Codex models.",
       details: {
-        provider: OPENAI_CODEX_PROVIDER_ID,
+        provider: OPENAI_PROVIDER_ID,
         profileId,
         ...(typeof profile.candidate.sourceCredentialIndex === "number"
           ? { sourceCredentialIndex: profile.candidate.sourceCredentialIndex }

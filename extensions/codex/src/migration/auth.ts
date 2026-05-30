@@ -26,7 +26,6 @@ import type { CodexSource } from "./source.js";
 import type { resolveCodexMigrationTargets } from "./targets.js";
 
 const OPENAI_PROVIDER_ID = "openai";
-const OPENAI_CODEX_PROVIDER_ID = OPENAI_PROVIDER_ID;
 const OPENAI_CODEX_DEFAULT_MODEL = "openai/gpt-5.5";
 const CODEX_IMPORT_DISPLAY_NAME = "Codex import";
 const CODEX_REASON_AUTH_NOT_SELECTED = "auth credential migration not selected";
@@ -45,7 +44,7 @@ type AgentDefaultModelConfigEntry = AgentDefaultModelConfigs[string];
 type CodexAuthCredential =
   | {
       kind: "oauth";
-      provider: typeof OPENAI_CODEX_PROVIDER_ID;
+      provider: typeof OPENAI_PROVIDER_ID;
       profileId: string;
       result: ProviderAuthResult;
       modelConfigs: AgentDefaultModelConfigs;
@@ -198,7 +197,7 @@ async function buildCodexOAuthCredential(source: CodexSource): Promise<CodexAuth
     },
   } satisfies Partial<OpenClawConfig>;
   const result = buildOauthProviderAuthResult({
-    providerId: OPENAI_CODEX_PROVIDER_ID,
+    providerId: OPENAI_PROVIDER_ID,
     defaultModel: OPENAI_CODEX_DEFAULT_MODEL,
     access: credential.access,
     refresh: credential.refresh,
@@ -217,7 +216,7 @@ async function buildCodexOAuthCredential(source: CodexSource): Promise<CodexAuth
   return profile
     ? {
         kind: "oauth",
-        provider: OPENAI_CODEX_PROVIDER_ID,
+        provider: OPENAI_PROVIDER_ID,
         profileId: profile.profileId,
         result,
         modelConfigs: readProviderAuthModelConfigs(result),
