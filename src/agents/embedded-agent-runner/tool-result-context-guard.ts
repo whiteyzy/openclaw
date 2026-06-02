@@ -327,11 +327,7 @@ export function installContextEngineLoopHook(params: {
   sessionFile: string;
   tokenBudget?: number;
   modelId: string;
-<<<<<<< HEAD
-  repairAssembledMessages?: (messages: AgentMessage[]) => AgentMessage[];
-=======
-  isHeartbeat?: boolean;
->>>>>>> 6cb281533 (fix(agents): forward isHeartbeat param to contextEngine.afterTurn)
+repairAssembledMessages?: (messages: AgentMessage[]) => AgentMessage[];
   getPrePromptMessageCount?: () => number;
   onAfterTurnCheckpoint?: (messageCount: number) => void;
   getRuntimeContext?: (params: {
@@ -404,11 +400,7 @@ export function installContextEngineLoopHook(params: {
             messages: transcriptMessages,
             prePromptMessageCount,
           }),
-<<<<<<< HEAD
-          isHeartbeat: params.isHeartbeat,
-=======
-          ...(params.isHeartbeat !== undefined ? { isHeartbeat: params.isHeartbeat } : {}),
->>>>>>> 6cb281533 (fix(agents): forward isHeartbeat param to contextEngine.afterTurn)
+isHeartbeat: params.isHeartbeat,
         });
       } else {
         const newMessages = transcriptMessages.slice(prePromptMessageCount);
